@@ -1,13 +1,24 @@
-function numDecodings(s) {
-  if (s.length === 0) return 0;
-  const dp = new Array(s.length + 1).fill(0);
-  dp[0] = 1;
-  dp[1] = s[0] !== "0" ? 1 : 0;
-  for (let i = 2; i <= s.length; i++) {
-    const oneDigit = parseInt(s.substring(i - 1, i));
-    const twoDigits = parseInt(s.substring(i - 2, i));
-    if (oneDigit >= 1) dp[i] += dp[i - 1];
-    if (twoDigits >= 10 && twoDigits <= 26) dp[i] += dp[i - 2];
+function exist(board, word) {
+  const rows = board.length;
+  const cols = board[0].length;
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      if (dfs(board, i, j, word, 0)) return true;
+    }
   }
-  return dp[s.length];
+  return false;
+  function dfs(board, i, j, word, index) {
+    if (index === word.length) return true;
+    if (i < 0 || i >= rows || j < 0 || j >= cols || board[i][j] !== word[index])
+      return false;
+    const temp = board[i][j];
+    board[i][j] = "#";
+    const found =
+      dfs(board, i + 1, j, word, index + 1) ||
+      dfs(board, i - 1, j, word, index + 1) ||
+      dfs(board, i, j + 1, word, index + 1) ||
+      dfs(board, i, j - 1, word, index + 1);
+    board[i][j] = temp;
+    return found;
+  }
 }
