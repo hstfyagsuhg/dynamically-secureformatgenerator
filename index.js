@@ -1,40 +1,21 @@
-const strandSort = (arr) => {
-  const extract = (arr, x) => {
-    const extracted = [];
-    let i = 0;
-    while (i < arr.length) {
-      if (x.includes(arr[i])) {
-        extracted.push(arr.splice(i, 1)[0]);
-      } else {
-        i++;
-      }
+function permuteUnique(nums) {
+  const result = [];
+  nums.sort((a, b) => a - b);
+  backtrack([], new Array(nums.length).fill(false));
+  return result;
+  function backtrack(current, used) {
+    if (current.length === nums.length) {
+      result.push([...current]);
+      return;
     }
-    return extracted;
-  };
-  const merge = (a, b) => {
-    const merged = [];
-    let i = 0;
-    let j = 0;
-    while (i < a.length && j < b.length) {
-      if (a[i] < b[j]) {
-        merged.push(a[i]);
-        i++;
-      } else {
-        merged.push(b[j]);
-        j++;
-      }
+    for (let i = 0; i < nums.length; i++) {
+      if (used[i] || (i > 0 && nums[i] === nums[i - 1] && !used[i - 1]))
+        continue;
+      current.push(nums[i]);
+      used[i] = true;
+      backtrack(current, used);
+      current.pop();
+      used[i] = false;
     }
-    return merged.concat(i < a.length ? a.slice(i) : b.slice(j));
-  };
-  let sorted = [];
-  while (arr.length > 0) {
-    let sublist = [arr.shift()];
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i] > sublist[sublist.length - 1]) {
-        sublist.push(arr.splice(i, 1)[0]);
-      }
-    }
-    sorted = merge(sorted, sublist);
   }
-  return sorted;
-};
+}
